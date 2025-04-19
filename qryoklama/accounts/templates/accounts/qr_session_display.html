@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Kod Görüntüle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #1a4f8a;
+      --secondary-color: #2c7bb6;
+      --light-color: #f0f7ff;
+      --dark-color: #0c2d4a;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      background-color: #f5f9ff;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 40px;
+      border-top: 5px solid var(--primary-color);
+      text-align: center;
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 24px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 3px;
+      background-color: var(--secondary-color);
+    }
+    
+    p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    
+    img {
+      max-width: 300px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px 15px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      p {
+        font-size: 14px;
+      }
+      
+      .btn {
+        padding: 10px 20px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>QR Kod</h1>
+    <p>Ders: {{ qr_session.course.course_code|upper }} - {{ qr_session.course.course_name }}</p>
+    <p>Hafta: {{ qr_session.week_number }}</p>
+    <img src="data:image/png;base64,{{ qr_code }}" alt="QR Kod">
+    <a href="{% url 'qr_session_end' qr_session.id %}" class="btn">Yoklamayı Sonlandır</a>
+    <br>
+    <a href="{% url 'academic_panel' %}" class="btn">Geri Dön</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Oturumu Oluştur</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #1a4f8a;
+      --secondary-color: #2c7bb6;
+      --tertiary-color: #d1e6f9;
+      --light-color: #f0f7ff;
+      --dark-color: #0c2d4a;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      background-color: #f5f9ff;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 40px;
+      border-top: 5px solid var(--primary-color);
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 24px;
+      position: relative;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 3px;
+      background-color: var(--secondary-color);
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--dark-color);
+    }
+    
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    .input-field {
+      margin-top: 10px;
+    }
+    
+    .timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .week-option {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .week-option.disabled {
+      background-color: #f2f2f2;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    
+    .week-option.selected {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px 15px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>QR Oturumu Oluştur</h1>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    <form action="{% url 'qr_session_create' %}" method="post" id="qrForm">
+      {% csrf_token %}
+      <label for="course_id">Ders Seçiniz:</label>
+      <select name="course_id" id="course_id" required>
+        <option value="">Seçiniz</option>
+        {% for course in courses %}
+          <option value="{{ course.id }}">{{ course.course_code|upper }} - {{ course.course_name }}</option>
+        {% endfor %}
+      </select>
+      <div class="input-field">
+        <label for="session_number">Oturum Numarası:</label>
+        <input type="number" name="session_number" id="session_number" value="1" min="1" required>
+      </div>
+      <label>Hafta Seçiniz:</label>
+      <div class="timeline" id="weekTimeline">
+        {% for week in week_range %}
+          {% if week in exam_weeks %}
+            <div class="week-option disabled" data-week="{{ week }}">{{ week }} (Sınav)</div>
+          {% else %}
+            <div class="week-option" data-week="{{ week }}">{{ week }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <input type="hidden" name="week_number" id="week_number" value="">
+      <button type="submit" class="btn">QR Kod Oluştur</button>
+    </form>
+    <br>
+    <a href="{% url 'academic_panel' %}" class="btn">Geri Dön</a>
+  </div>
+
+  <script>
+    // Haftaların seçilmesi için
+    const weekOptions = document.querySelectorAll('.week-option');
+    const weekInput = document.getElementById('week_number');
+    weekOptions.forEach(option => {
+      if (!option.classList.contains('disabled')) {
+        option.addEventListener('click', function() {
+          weekOptions.forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+          weekInput.value = this.getAttribute('data-week');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

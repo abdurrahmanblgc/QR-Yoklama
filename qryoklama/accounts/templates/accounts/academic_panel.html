@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Akademisyen Paneli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #1a4f8a;
+      --secondary-color: #2c7bb6;
+      --tertiary-color: #d1e6f9;
+      --light-color: #f0f7ff;
+      --dark-color: #0c2d4a;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --hover-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f9ff;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    }
+    
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 40px;
+      border-top: 5px solid var(--primary-color);
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 28px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 3px;
+      background-color: var(--secondary-color);
+    }
+    
+    h2 {
+      color: var(--primary-color);
+      margin: 30px 0 20px;
+      font-weight: 500;
+      font-size: 22px;
+      position: relative;
+      padding-left: 15px;
+    }
+    
+    h2:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      height: 70%;
+      width: 5px;
+      background-color: var(--secondary-color);
+      border-radius: 3px;
+    }
+    
+    .alert {
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    .alert.error {
+      background-color: #ffe0e0;
+      color: #d32f2f;
+      border-left: 4px solid #d32f2f;
+    }
+    
+    .alert.success {
+      background-color: #e0ffe0;
+      color: #2e7d32;
+      border-left: 4px solid #2e7d32;
+    }
+    
+    .alert.info {
+      background-color: #e3f2fd;
+      color: #0277bd;
+      border-left: 4px solid #0277bd;
+    }
+    
+    .btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+      justify-content: center;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+    
+    .btn-danger {
+      background-color: #dc3545;
+    }
+    
+    .btn-success {
+      background-color: #28a745;
+    }
+    
+    .btn-detail {
+      background-color: var(--secondary-color);
+    }
+    
+    hr {
+      border: none;
+      height: 1px;
+      background-color: #e1e5eb;
+      margin: 30px 0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    thead tr {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 500;
+    }
+    
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #e1e5eb;
+    }
+    
+    tbody tr:nth-child(even) {
+      background-color: var(--light-color);
+    }
+    
+    tbody tr:hover {
+      background-color: var(--tertiary-color);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 30px;
+      color: #6c757d;
+      font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .btn {
+        width: 100%;
+        margin-right: 0;
+      }
+      
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Akademisyen Paneli</h1>
+    
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    
+    <div class="btn-container">
+      <a href="{% url 'course_create' %}" class="btn">Yeni Ders Ekle</a>
+      <a href="{% url 'qr_session_create' %}" class="btn">QR Oturumu Oluştur</a>
+      <a href="{% url 'attendance_record_list' %}" class="btn">Yoklama Kayıtları</a>
+      <a href="{% url 'academic_profile' %}" class="btn">Profilim</a>
+      <a href="{% url 'logout' %}" class="btn btn-secondary">Çıkış Yap</a>
+    </div>
+    
+    <hr>
+    
+    <h2>Ders Listesi</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Ders Kodu</th>
+          <th>Ders Adı</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for course in courses %}
+        <tr>
+          <td>{{ course.course_code|upper }}</td>
+          <td>{{ course.course_name }}</td>
+          <td>
+            <a href="{% url 'course_detail' course.id %}" class="btn btn-detail">Ders Detay</a>
+            <a href="{% url 'send_attendance_email' course.id %}" class="btn btn-success">Yoklamaları Gönder</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="empty-state">Henüz ders eklenmemiş.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+     <div class="btn-container">
+      <a href="{% url 'send_academic_attendance_email' %}" class="btn btn-success">Detaylı Rapor Gönder</a>
+    </div>
+  </div>
+</body>
+</html>

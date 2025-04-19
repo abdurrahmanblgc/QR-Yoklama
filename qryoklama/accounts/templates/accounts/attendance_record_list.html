@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yoklama Kayıtları</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #1a4f8a;
+            --secondary-color: #2c7bb6;
+            --tertiary-color: #d1e6f9;
+            --light-color: #f0f7ff;
+            --dark-color: #0c2d4a;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --success-bg: #e6f7ed;
+            --success-border: #57c47c;
+            --warning-bg: #fff0e0;
+            --warning-border: #ff9f43;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f9ff;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 40px;
+            border-top: 5px solid var(--primary-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 24px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        h2 {
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        
+        .section-title {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            margin: 30px 0 15px 0;
+            border-radius: 5px;
+            font-weight: 500;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title span {
+            background: white;
+            color: var(--primary-color);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px 0;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--light-color);
+        }
+        
+        tr:hover {
+            background-color: var(--tertiary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 15px;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 10px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-title span {
+                margin-top: 8px;
+            }
+            
+            th, td {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Yoklama Kayıtları</h1>
+        {% if grouped_sessions %}
+            {% for course, sessions in grouped_sessions.items %}
+                <div class="section-title">
+                    {{ course.course_code|upper }} - {{ course.course_name }}
+                    <span>{{ sessions|length }}</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hafta</th>
+                            <th>Oturum Numarası</th>
+                            <th>Oluşturulma Tarihi</th>
+                            <th>Mevcut / Toplam</th>
+                            <th>Detay</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                        <tr>
+                            <td>{{ session.week_number }}</td>
+                            <td>{{ session.session_number }}</td>
+                            <td>{{ session.created_at|date:"d M Y H:i" }}</td>
+                            <td>{{ session.present_count }} / {{ session.total_count }}</td>
+                            <td>
+                                <a href="{% url 'attendance_detail' session.id %}" class="btn">Detay</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        {% else %}
+            <p>Henüz yoklama kaydı oluşturulmamış.</p>
+        {% endif %}
+        <a href="{% url 'academic_panel' %}" class="btn">Geri Dön</a>
+    </div>
+</body>
+</html>

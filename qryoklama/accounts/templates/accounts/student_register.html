@@ -1,0 +1,367 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Öğrenci Kayıt</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #0a4a91;
+            --secondary-color: #1976d2;
+            --accent-color: #64b5f6;
+            --light-color: #e8f0fe;
+            --dark-color: #0d2f63;
+            --text-primary: #333333;
+            --text-secondary: #5e6a78;
+            --shadow: 0 6px 12px rgba(0, 41, 103, 0.1);
+            --card-shadow: 0 3px 8px rgba(10, 74, 145, 0.08);
+            --success-bg: #e6f7ed;
+            --success-border: #57c47c;
+            --warning-bg: #fff0e0;
+            --warning-border: #ff9f43;
+            --error-bg: #fee8e7;
+            --error-border: #f27474;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f7ff, #e6effd);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 550px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 40px;
+            border-top: 6px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at top right, var(--accent-color, #64b5f6) 0%, transparent 70%);
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 28px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+            z-index: 1;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+        
+        form {
+            position: relative;
+            z-index: 1;
+        }
+        
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            color: var(--dark-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dbe3f0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            background-color: #fafcff;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+            background-color: white;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230a4a91' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        label[for="accept_privacy"] {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            margin-top: 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 3px 6px rgba(10, 74, 145, 0.2);
+        }
+        
+        button:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(10, 74, 145, 0.3);
+        }
+        
+        .alert {
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        .alert.success {
+            background-color: var(--success-bg);
+            border-left: 4px solid var(--success-border);
+            color: #2a6844;
+        }
+        
+        .alert.success::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232a6844' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'%3E%3C/path%3E%3Cpolyline points='22 4 12 14.01 9 11.01'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+        
+        .alert.warning {
+            background-color: var(--warning-bg);
+            border-left: 4px solid var(--warning-border);
+            color: #8a4f00;
+        }
+        
+        .alert.warning::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238a4f00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'%3E%3C/path%3E%3Cline x1='12' y1='9' x2='12' y2='13'%3E%3C/line%3E%3Cline x1='12' y1='17' x2='12.01' y2='17'%3E%3C/line%3E%3C/svg%3E");
+        }
+        
+        .alert.error {
+            background-color: var(--error-bg);
+            border-left: 4px solid var(--error-border);
+            color: #cf3333;
+        }
+        
+        .alert.error::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23cf3333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cline x1='15' y1='9' x2='9' y2='15'%3E%3C/line%3E%3Cline x1='9' y1='9' x2='15' y2='15'%3E%3C/line%3E%3C/svg%3E");
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .password-field {
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 25px;
+                margin: 15px auto;
+                border-top-width: 5px;
+            }
+            
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 25px 20px;
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            label {
+                font-size: 0.9rem;
+            }
+            
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            select {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Öğrenci Kayıt Formu</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="first_name">Ad:</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ first_name|default:'' }}" required>
+                </div>
+                
+                <div class="form-col">
+                    <label for="last_name">Soyad:</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ last_name|default:'' }}" required>
+                </div>
+            </div>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ email|default:'' }}" required>
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="password">Şifre:</label>
+                    <div class="password-field">
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+                
+                <div class="form-col">
+                    <label for="confirm_password">Şifre Tekrar:</label>
+                    <div class="password-field">
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                    </div>
+                </div>
+            </div>
+            
+            <label for="student_number">Öğrenci Numarası:</label>
+            <input type="text" id="student_number" name="student_number" value="{{ student_number|default:'' }}" required>
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="student_class">Sınıf Seçimi:</label>
+                    <select id="student_class" name="student_class" required>
+                        <option value="">Seçiniz</option>
+                        <option value="1" {% if student_class == "1" %}selected{% endif %}>1</option>
+                        <option value="2" {% if student_class == "2" %}selected{% endif %}>2</option>
+                        <option value="3" {% if student_class == "3" %}selected{% endif %}>3</option>
+                        <option value="4" {% if student_class == "4" %}selected{% endif %}>4</option>
+                    </select>
+                </div>
+                
+                <div class="form-col">
+                    <label for="department">Bölüm Seçimi:</label>
+                    <select id="department" name="department" required>
+                        <option value="Yönetim Bilişim Sistemleri" selected>Yönetim Bilişim Sistemleri</option>
+                    </select>
+                </div>
+            </div>
+            
+            <label for="accept_privacy">
+                <input type="checkbox" id="accept_privacy" name="accept_privacy" {% if accept_privacy %}checked{% endif %} required>
+                Gizlilik Sözleşmesini Onaylıyorum
+            </label>
+            
+            <button type="submit">Kayıt Ol</button>
+        </form>
+    </div>
+</body>
+</html>

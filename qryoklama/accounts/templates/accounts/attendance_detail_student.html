@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ course.course_code|upper }} - Yoklama Detayları</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #1a4f8a;
+      --secondary-color: #2c7bb6;
+      --tertiary-color: #d1e6f9;
+      --light-color: #f0f7ff;
+      --dark-color: #0c2d4a;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f9ff;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      color: #333;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 40px;
+      border-top: 5px solid var(--primary-color);
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 24px;
+      position: relative;
+      padding-bottom: 15px;
+      line-height: 1.4;
+    }
+    
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 3px;
+      background-color: var(--secondary-color);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    th, td {
+      padding: 14px 20px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    
+    td {
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:nth-child(even) {
+      background-color: var(--light-color);
+    }
+    
+    tr:hover {
+      background-color: var(--tertiary-color);
+    }
+    
+    p {
+      color: #666;
+      font-size: 16px;
+      text-align: center;
+      margin: 25px 0;
+      padding: 20px;
+      background-color: var(--light-color);
+      border-radius: 8px;
+      border-left: 4px solid var(--secondary-color);
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px 15px;
+      }
+      
+      h1 {
+        font-size: 20px;
+      }
+      
+      th, td {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ course.course_code|upper }} - {{ course.course_name }} Yoklama Detayları</h1>
+    {% if records %}
+      <table>
+        <thead>
+          <tr>
+            <th>Hafta</th>
+            <th>Oturum</th>
+            <th>Durum</th>
+            <th>Tarih</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in records %}
+            <tr>
+              <td>{{ record.qr_session.week_number }}</td>
+              <td>{{ record.qr_session.session_number }}</td>
+              <td>{% if record.present %}Mevcut{% else %}Yok{% endif %}</td>
+              <td>{{ record.qr_session.created_at|date:"d M Y H:i" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Henüz yoklama kaydı bulunmamaktadır.</p>
+    {% endif %}
+    <a href="{% url 'student_panel' %}" class="btn">Geri Dön</a>
+  </div>
+</body>
+</html>
